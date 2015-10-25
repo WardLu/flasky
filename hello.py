@@ -8,11 +8,9 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required
 
-# basedir = os.path.abspath(os.path.dirname(__file__))
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'hard to guess string'
-app.config['SQLAlCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:mysql@localhost/flask'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:mysql@localhost/flask'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 
 manager = Manager(app)
