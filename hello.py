@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template,session,redirect,url_for,flash
+from flask import Flask, render_template,session,redirect,url_for
 from flask.ext.script import Manager
 from flask.ext.bootstrap import Bootstrap
 from flask.ext.moment import Moment
@@ -13,7 +13,7 @@ from wtforms.validators import Required
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'hard to guess string'
-app.config['SQLAlCHEMY_DATABASE_URI'] = 'mysql://root:mysql@localhost/flask'
+app.config['SQLAlCHEMY_DATABASE_URI'] = 'mysql+mysqldb://root:mysql@localhost/flask'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 
 manager = Manager(app)
@@ -31,6 +31,7 @@ class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
     users = db.relationship('User', backref='role')
+    
     
     def __repr__(self):
         return '<Role %r>' % self.name
@@ -54,7 +55,7 @@ def internal_server_error(e):
     return render_template('500.html'), 500
 
 def make_shell_context():
-return dict(app=app, db=db, User=User, Role=Role)
+    return dict(app=app, db=db, User=User, Role=Role)
 manager.add_command("shell", Shell(make_context=make_shell_context))
 
 @app.route('/', methods=['GET', 'POST'])
