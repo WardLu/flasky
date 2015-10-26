@@ -10,6 +10,7 @@ from flask.ext.migrate import Migrate, MigrateCommand
 from flask.ext.mail import Mail,Message
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required
+from threading import Thread
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'hard to guess string'
@@ -75,8 +76,13 @@ def send_email(to, subject, template, **kwargs):
                   sender=app.config['FLASKY_MAIL_SENDER'], recipients=[to])
     msg.body = render_template(template + '.txt', **kwargs)
     msg.html = render_template(template + '.html', **kwargs)
-    mail.send(msg)
+    thr = Thread(target=send_async_email,args=[app,msg])
+    thr.start()
+    return thr
 
+def sed_async_mail(app,msg):
+    with app.app_context():
+        mail.send(msg)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
